@@ -32,9 +32,9 @@
       print("<table>
          <tr>
             <th>ID</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Machine</th>
+            <th>Vardas</th>
+            <th>Pavardė</th>
+            <th>Mašinos ID</th>
          </tr>");
       if (mysqli_num_rows($result) > 0) {
          while ($row = mysqli_fetch_assoc($result)) {
@@ -46,19 +46,19 @@
       print("</table>");
    }
 
-   $sql2 =  "SELECT Machines.id, machine_name,fname, lname FROM machines RIGHT JOIN Personnel ON Machines.id=Personnel.Machine_id WHERE Machines.id=Personnel.Machine_id ";
+   $sql2 =  'SELECT Machines.id, machine_name, GROUP_CONCAT(CONCAT_WS(" ", fname, lname)SEPARATOR ", ") as fullname 
+   FROM machines RIGHT JOIN Personnel ON Machines.id=Personnel.Machine_id WHERE Machines.id=Personnel.Machine_id GROUP BY machine_name';
    $result2 = mysqli_query($conn, $sql2);
    if (isset($_GET['path']) and $_GET['path'] === 'masinos') {
       print("<table >
          <tr>
             <th >ID</th>
-            <th>Machine</th>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>Mašinos ID</th>
+            <th>Darbuotojai</th>
          </tr>");
       if (mysqli_num_rows($result2) > 0) {
          while ($row = mysqli_fetch_assoc($result2)) {
-            print('<tr> <td ">' . $row["id"] . '</td> <td>' . $row["machine_name"] . '</td> <td>' . $row["fname"] . '</td><td> ' . $row["lname"] . '</td></tr>');
+            print('<tr> <td ">' . $row["id"] . '</td> <td>' . $row["machine_name"] . '</td> <td>' . $row["fullname"] . '</td></tr>');
          }
       } else {
          echo "0 results";
