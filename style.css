@@ -46,6 +46,7 @@ table th {
    border: 1px solid;
    border-color:#E8E8E8;
    background-color: rgb(153, 53, 53);
+   color:white;
 }
 table td {
    border: 1px solid;
@@ -58,4 +59,17 @@ footer {
    position: sticky;
    top: 100vh;
    background-color: #E8E8E8;
+   margin-top:2rem;
+}
+button {
+   background-color: rgb(153, 53, 53);
+   border: none;
+   color: white;
+   padding:0.5rem;
+   margin:1px;
+   border-radius:5px;
+   font-size: 16px;
+}
+button:hover {
+   background-color: rgba(153, 53, 53, 0.678);
 }
