@@ -11,13 +11,20 @@ It is needed to create table in MySQL to launch this project. Follow these steps
   * `CREATE DATABASE Test;`
 * Create personnel table (copy and paste this command):
   * `CREATE TABLE personnel (
-id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+id INT AUTO_INCREMENT PRIMARY KEY,
 fname VARCHAR(30),
 lname VARCHAR(30),
 machine_id int
 );`
 * Create machines table  (copy and paste this command):
   * `CREATE TABLE machines (
-id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+id INT AUTO_INCREMENT PRIMARY KEY,
 machine_name VARCHAR(5)
 );`
+* Adding references one to many :
+  * `ALTER TABLE personnel
+ADD CONSTRAINT FOREIGN KEY
+    fk_machine_id (Machine_id)
+    REFERENCES Machines(id)
+    ON DELETE SET NULL
+    ON UPDATE SET NULL;`
