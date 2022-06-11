@@ -78,7 +78,7 @@ button:hover {
    background-color: rgba(153, 53, 53, 0.678);
 }
 
-.createForm {
+.createForm, .updateForm {
    display: flex;
    flex-direction: column;
    width: 25%;
@@ -88,7 +88,7 @@ button:hover {
    gap: 0.5rem;
 }
 
-.createForm input[type=text] {
+.createForm input[type=text], .updateForm input[type=text] {
    width: 100%;
    padding: 0.5rem;
    margin: 0 auto;
@@ -98,7 +98,7 @@ button:hover {
    box-sizing: border-box;
 }
 
-.createForm select {
+.createForm select, select#machineUpdt {
    color: rgb(153, 53, 53);
    border-radius: 5px;
    padding: 0.5rem;
@@ -118,4 +118,7 @@ select option:hover {
 
 option:checked {
    box-shadow: 0 0 10px 100px #cdcdca inset;
+}
+.createId {
+   text-align: center;
 }

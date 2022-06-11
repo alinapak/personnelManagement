@@ -33,8 +33,10 @@ declare(strict_types=1); ?>
       die;
    }
    if (isset($_POST['createEmpl'])) {
+      $fname = htmlspecialchars($_POST['fname']);
+      $lname = htmlspecialchars($_POST['lname']);
       $sqlCreate = "INSERT INTO personnel (fname, lname)
-         VALUES ('" . $_POST['fname'] . "', '" . $_POST['lname'] . "')";
+                     VALUES ('" . $fname . "', '" . $lname . "')";
       if (mysqli_query($conn, $sqlCreate))
          header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
       die;
@@ -44,12 +46,33 @@ declare(strict_types=1); ?>
       $alreadyExists = mysqli_query($conn, $check);
       if (mysqli_num_rows($alreadyExists) < 1) {
          $sqlCreate = "INSERT INTO machines (machine_name)
-         VALUES ('" . $_POST['machine'] . "')";
+                        VALUES ('" . $_POST['machine'] . "')";
          if (mysqli_query($conn, $sqlCreate))
             header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
          die;
       }
       header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
+      die;
+   }
+   if (isset($_POST['updateSql'])) {
+      $fname = htmlspecialchars($_POST['fname']);
+      $lname = htmlspecialchars($_POST['lname']);
+      $sqlUpdate = "UPDATE personnel
+                     SET
+                     fname = '" . $fname . "',
+                     lname = '" . $lname . "'
+                     WHERE id = " . $_POST['updateSql'] . "";
+      if (mysqli_query($conn, $sqlUpdate))
+         header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
+      die;
+   }
+   if (isset($_POST['submit'])) {
+      $sqlUpdate = "UPDATE machines
+                     SET
+                     machine_name = '" . $_POST['machineUpdt'] . "'
+                     WHERE id = " . $_POST['submit'] . "";
+      if (mysqli_query($conn, $sqlUpdate))
+         header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
       die;
    }
    print('<div class="navbar">
@@ -81,7 +104,7 @@ declare(strict_types=1); ?>
                         <td>
                            <form method="POST" action="">
                               <button id= "deleteEm" name="deleteEm" value="' . $row["id"] . '">Ištrinti</button>
-                              <button id="updateEm" name="updateEm" value="">Atnaujinti</button>
+                              <button id="updateEm" name="updateEm" value="' . $row["id"] . '">Atnaujinti</button>
                            </form>
                         </td>
                      </tr>');
@@ -90,11 +113,20 @@ declare(strict_types=1); ?>
          echo "0 results";
       }
       print("</table>");
-      print("<form class='createForm' action='' method='POST'>
-                  <input type='text' name='fname' placeholder='Vardas' required>
-                  <input type='text' name='lname' placeholder='Pavardė' required>
-                  <button id='createEmpl' name='createEmpl'>Sukurti</button>
+      if (!isset($_POST['updateEm'])) {
+         print("<form class='createForm' action='' method='POST'>
+                     <input type='text' name='fname' placeholder='Vardas' required>
+                     <input type='text' name='lname' placeholder='Pavardė' required>
+                     <button id='createEmpl' name='createEmpl'>Pridėti</button>
+                  </form>");
+      } else if (isset($_POST['updateEm'])) {
+         print("<form class='updateForm' action='' method='POST'>
+                  <p class='createId'> Pakeisti darbuotojo, kurio ID yra " . $_POST['updateEm'] . ", duomenis</p>
+                  <input type='text' name='fname' placeholder='Pakeisti darbuotojo vardą' required>
+                  <input type='text' name='lname' placeholder='Pakeisti darbuotojo pavardę' required>
+                  <button id='updateSql' name='updateSql' value=" . $_POST['updateEm'] . ">Pakeisti</button>
                </form>");
+      }
    }
    $sql2 =  'SELECT Machines.id, machine_name, GROUP_CONCAT(CONCAT_WS(" ", fname, lname)SEPARATOR ", ") as fullname 
                FROM personnel RIGHT JOIN Machines ON Machines.id=Personnel.Machine_id GROUP BY machine_name order by id';
@@ -116,7 +148,7 @@ declare(strict_types=1); ?>
                         <td>
                            <form method="POST" action="">
                               <button id= "deleteM" name="deleteM" value="' . $row["id"] . '">Ištrinti</button>
-                              <button>Atnaujinti</button>
+                              <button id="updateM" name="updateM" value="' . $row["id"] . '">Atnaujinti</button>
                            </form>
                         </td>
                      </tr>');
@@ -125,7 +157,8 @@ declare(strict_types=1); ?>
          echo "0 results";
       }
       print("</table>");
-      print("<form class='createForm' action='' method='POST'>
+      if (!isset($_POST['updateM'])) {
+         print("<form class='createForm' action='' method='POST'>
                   <select id='machine' name='machine' onfocus='this.size=11;' onchange='this.size=1; onblur='this.size=0;' >
                      <option value='H-1'>H-1</option>
                      <option value='H-2'>H-2</option>
@@ -141,6 +174,25 @@ declare(strict_types=1); ?>
                   </select>
                   <button>Pridėti</button>
                </form>");
+      } else if (isset($_POST['updateM'])) {
+         print("<form class='updateForm' action='' method='POST'>
+                  <p>Pakeisti mašiną, kurios id yra " . $_POST['updateM'] . "</p>
+                     <select id='machineUpdt' name='machineUpdt' onfocus='this.size=11;' onchange='this.size=1; onblur='this.size=0;' >
+                        <option value='H-1'>H-1</option>
+                        <option value='H-2'>H-2</option>
+                        <option value='H-4'>H-4</option>
+                        <option value='H-5'>H-5</option>
+                        <option value='H-6'>H-6</option>
+                        <option value='E-1'>E-1</option>
+                        <option value='H-7'>H-7</option>
+                        <option value='H-8'>H-8</option>
+                        <option value='H-9'>H-9</option>
+                        <option value='H-10'>H-10</option>
+                        <option value='S-1'>S-1</option>
+                     </select>
+                     <button type='submit' name='submit' value='" . $_POST['updateM'] . "'>Pakeisti</button>
+                  </form>");
+      }
    } else if (!isset($_GET['path'])) {
       print("<table>
                   <tr>
@@ -160,20 +212,29 @@ declare(strict_types=1); ?>
                         <td>
                            <form method="POST" action="">
                               <button id= "deleteEm" name="deleteEm" value="' . $row["id"] . '">Ištrinti</button>
-                              <button id="updateEm" name="updateEm" value="">Atnaujinti</button>
+                              <button id="updateEm" name="updateEm" value="' . $row["id"] . '">Atnaujinti</button>
                            </form>
                         </td>
-                        </tr>');
+                  </tr>');
          }
       } else {
          echo "0 results";
       }
       print("</table>");
-      print("<form class='createForm' action='' method='POST'>
+      if (!isset($_POST['updateEm'])) {
+         print("<form class='createForm' action='' method='POST'>
                   <input type='text' name='fname' placeholder='Vardas' required>
                   <input type='text' name='lname' placeholder='Pavardė' required>
                   <button id='createEmpl' name='createEmpl'>Pridėti</button>
                </form>");
+      } else if (isset($_POST['updateEm'])) {
+         print("<form class='updateForm' action='' method='POST'>
+                  <p class='createId'> Pakeisti darbuotojo, kurio ID yra " . $_POST['updateEm'] . ", duomenis</p>
+                  <input type='text' name='fname' placeholder='Pakeisti darbuotojo vardą' required>
+                  <input type='text' name='lname' placeholder='Pakeisti darbuotojo pavardę' required>
+                  <button id='updateSql' name='updateSql' value=" . $_POST['updateEm'] . ">Pakeisti</button>
+               </form>");
+      }
    }
    print("<footer>
             <p>Copyright</p>
