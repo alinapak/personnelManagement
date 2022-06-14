@@ -63,6 +63,9 @@ footer {
    background-color: #E8E8E8;
    margin-top: 2rem;
 }
+#footerText {
+   text-align: center;
+}
 
 button {
    background-color: rgb(153, 53, 53);
@@ -98,7 +101,7 @@ button:hover {
    box-sizing: border-box;
 }
 
-.createForm select, select#machineUpdt {
+select#pName {
    color: rgb(153, 53, 53);
    border-radius: 5px;
    padding: 0.5rem;

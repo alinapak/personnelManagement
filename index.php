@@ -12,95 +12,104 @@ declare(strict_types=1); ?>
 
 <body>
    <?php
-   $servername = "localhost";
-   $username = "root";
-   $password = "";
-   $dbname = "personnelman";
-   $conn = mysqli_connect($servername, $username, $password, $dbname);
-   if (!$conn) {
-      die("Connection failed: " . mysqli_connect_error());
-   }
-   if (isset($_POST['deleteEm'])) {
-      $sqlDelete = "DELETE FROM personnel WHERE id = " . $_POST['deleteEm'] . "";
-      if (mysqli_query($conn, $sqlDelete))
-         header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
-      die;
-   }
-   if (isset($_POST['deleteM'])) {
-      $sqlDelete = "DELETE FROM machines WHERE id = " . $_POST['deleteM'] . "";
-      if (mysqli_query($conn, $sqlDelete))
-         header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
-      die;
-   }
-   if (isset($_POST['createEmpl'])) {
-      $fname = htmlspecialchars($_POST['fname']);
-      $lname = htmlspecialchars($_POST['lname']);
-      $sqlCreate = "INSERT INTO personnel (fname, lname)
-                     VALUES ('" . $fname . "', '" . $lname . "')";
-      if (mysqli_query($conn, $sqlCreate))
-         header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
-      die;
-   }
-   if (isset($_POST['machine'])) {
-      $check = "SELECT * from machines WHERE machine_name = '" . $_POST['machine'] . "'";
-      $alreadyExists = mysqli_query($conn, $check);
-      if (mysqli_num_rows($alreadyExists) < 1) {
-         $sqlCreate = "INSERT INTO machines (machine_name)
-                        VALUES ('" . $_POST['machine'] . "')";
-         if (mysqli_query($conn, $sqlCreate))
+      $servername = "localhost";
+      $username = "root";
+      $password = "";
+      $dbname = "personel_projects";
+      $conn = mysqli_connect($servername, $username, $password, $dbname);
+      if (!$conn) {
+         die("Connection failed: " . mysqli_connect_error());
+      }
+      if (isset($_POST['deleteEm'])) {
+         $sqlDelete = "DELETE FROM personnel WHERE id = " . $_POST['deleteEm'] . "";
+         if (mysqli_query($conn, $sqlDelete))
             header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
          die;
       }
-      header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
-      die;
-   }
-   if (isset($_POST['updateSql'])) {
-      $fname = htmlspecialchars($_POST['fname']);
-      $lname = htmlspecialchars($_POST['lname']);
-      $sqlUpdate = "UPDATE personnel
-                     SET
-                     fname = '" . $fname . "',
-                     lname = '" . $lname . "'
-                     WHERE id = " . $_POST['updateSql'] . "";
-      if (mysqli_query($conn, $sqlUpdate))
+      if (isset($_POST['deleteP'])) {
+         $sqlDelete = "DELETE FROM projects WHERE id = " . $_POST['deleteP'] . "";
+         if (mysqli_query($conn, $sqlDelete))
+            header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
+         die;
+      }
+      if (isset($_POST['createEmpl'])) {
+         $fname = htmlspecialchars($_POST['fname']);
+         $lname = htmlspecialchars($_POST['lname']);
+         $stmt = $conn->prepare("INSERT INTO personnel (fname, lname)
+         VALUES (?,?)");
+         $stmt->bind_param("ss",$fname, $lname);
+         $stmt->execute();
+         $stmt->close();
          header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
-      die;
-   }
-   if (isset($_POST['submit'])) {
-      $sqlUpdate = "UPDATE machines
-                     SET
-                     machine_name = '" . $_POST['machineUpdt'] . "'
-                     WHERE id = " . $_POST['submit'] . "";
-      if (mysqli_query($conn, $sqlUpdate))
+         die;
+      }
+      if (isset($_POST['project'])) {
+         $check = "SELECT * from projects WHERE project_name = '" . $_POST['project'] . "'";
+         $alreadyExists = mysqli_query($conn, $check);
+         if (mysqli_num_rows($alreadyExists) < 1) {
+            $sqlCreate = "INSERT INTO projects (project_name)
+                                 VALUES ('" . $_POST['project'] . "')";
+            if (mysqli_query($conn, $sqlCreate))
+               header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
+            die;
+         }
          header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
-      die;
-   }
-   print('<div class="navbar">
+         die;
+      }
+      if (isset($_POST['updateSql'])) {
+         $fname = htmlspecialchars($_POST['fname']);
+         $lname = htmlspecialchars($_POST['lname']);
+         $sqlUpdate = "UPDATE personnel LEFT JOIN Projects ON Personnel.Project_id = Projects.id
+                           SET
+                           fname = '$fname',
+                           lname = '$lname',
+                           project_id =  (SELECT id FROM Projects WHERE project_name = '" . $_POST['pName'] . "')
+                           WHERE personnel.id = " . $_POST['updateSql'] . "";
+         if (mysqli_query($conn, $sqlUpdate))
+            header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
+         die;
+      }
+      if (isset($_POST['submit'])) {
+         $check = "SELECT * from projects WHERE project_name = '" . $_POST['projectUpdate'] . "'";
+         $alreadyExists = mysqli_query($conn, $check);
+         if (mysqli_num_rows($alreadyExists) < 1) {
+            $sqlUpdate = "UPDATE projects
+                              SET
+                              project_name = '" . $_POST['projectUpdate'] . "'
+                              WHERE id = " . $_POST['submit'] . "";
+            if (mysqli_query($conn, $sqlUpdate))
+               header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
+            die;
+         }
+         header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
+         die;
+      }
+      print('<div class="navbar">
                <div>
                   <a href="?path=darbuotojai">Darbuotojai</a>
-                  <a href="?path=masinos">Mašinos</a>
+                  <a href="?path=projektai">Projektai</a>
                </div>
-               <p>Įmonės X mašinų valdymas</p>
+               <p>Darbuotojų ir jų projektų valdymas</p>
             </div>');
-   $sql = "SELECT personnel.id, fname, lname, machine_name 
-            FROM personnel LEFT JOIN Machines ON Personnel.Machine_id = Machines.id";
-   $result = mysqli_query($conn, $sql);
-   if (isset($_GET['path']) and $_GET['path'] === 'darbuotojai') {
-      print("<table>
+      $sql = "SELECT personnel.id, fname, lname, project_name, project_id 
+                     FROM personnel LEFT JOIN Projects ON Personnel.Project_id = Projects.id";
+      $result = mysqli_query($conn, $sql);
+      if (isset($_GET['path']) and $_GET['path'] === 'darbuotojai') {
+         print("<table>
                   <tr>
                      <th>ID</th>
                      <th>Vardas</th>
                      <th>Pavardė</th>
-                     <th>Mašinos ID</th>
+                     <th>Projektas</th>
                      <th>Pasirinktys</th>
                   </tr>");
-      if (mysqli_num_rows($result) > 0) {
-         while ($row = mysqli_fetch_assoc($result)) {
-            print('<tr>
+         if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+               print('<tr>
                         <td>' . $row["id"] . '</td> 
                         <td>' . $row["fname"] . '</td>
                         <td>' . $row["lname"] . '</td>
-                        <td> ' . $row["machine_name"] . '</td>
+                        <td> ' . $row["project_name"] . '</td>
                         <td>
                            <form method="POST" action="">
                               <button id= "deleteEm" name="deleteEm" value="' . $row["id"] . '">Ištrinti</button>
@@ -108,138 +117,134 @@ declare(strict_types=1); ?>
                            </form>
                         </td>
                      </tr>');
+            }
+         } else {
+            echo "0 results";
          }
-      } else {
-         echo "0 results";
-      }
-      print("</table>");
-      if (!isset($_POST['updateEm'])) {
-         print("<form class='createForm' action='' method='POST'>
+         print("</table>");
+         if (!isset($_POST['updateEm'])) {
+            print("<form class='createForm' action='' method='POST'>
                      <input type='text' name='fname' placeholder='Vardas' required>
                      <input type='text' name='lname' placeholder='Pavardė' required>
                      <button id='createEmpl' name='createEmpl'>Pridėti</button>
                   </form>");
-      } else if (isset($_POST['updateEm'])) {
-         print("<form class='updateForm' action='' method='POST'>
-                  <p class='createId'> Pakeisti darbuotojo, kurio ID yra " . $_POST['updateEm'] . ", duomenis</p>
-                  <input type='text' name='fname' placeholder='Pakeisti darbuotojo vardą' required>
-                  <input type='text' name='lname' placeholder='Pakeisti darbuotojo pavardę' required>
-                  <button id='updateSql' name='updateSql' value=" . $_POST['updateEm'] . ">Pakeisti</button>
-               </form>");
+         } else if (isset($_POST['updateEm'])) {
+            print("<form class='updateForm' action='' method='POST'>
+                     <p class='createId'> Pakeisti darbuotojo, kurio ID yra " . $_POST['updateEm'] . ", duomenis</p>
+                     <input type='text' name='fname' placeholder='Pakeisti darbuotojo vardą' required>
+                     <input type='text' name='lname' placeholder='Pakeisti darbuotojo pavardę' required>
+                     <select id='pName' name='pName' onfocus='this.size=5'>
+                        <option value=''>---Pasirinkti projektą---</option>");
+            $select = "select project_name from projects";
+            $result = mysqli_query($conn, $select);
+            if (mysqli_num_rows($result) > 0) {
+               while ($row = mysqli_fetch_assoc($result)) {
+                  print("<option value='" . $row["project_name"] . "'>" . $row["project_name"] . "</option>");
+               }
+               print("</select>
+                        <button type='updateSql' name='updateSql' value=" . $_POST['updateEm'] . ">Pakeisti</button>
+                  </form>");
+            }
+         }
       }
-   }
-   $sql2 =  'SELECT Machines.id, machine_name, GROUP_CONCAT(CONCAT_WS(" ", fname, lname)SEPARATOR ", ") as fullname 
-               FROM personnel RIGHT JOIN Machines ON Machines.id=Personnel.Machine_id GROUP BY machine_name order by id';
-   $result2 = mysqli_query($conn, $sql2);
-   if (isset($_GET['path']) and $_GET['path'] === 'masinos') {
-      print("<table >
+      $sql2 =  'SELECT Projects.id, project_name, GROUP_CONCAT(CONCAT_WS(" ", fname, lname)SEPARATOR ", ") as fullname 
+                        FROM personnel RIGHT JOIN Projects ON Projects.id=Personnel.Project_id GROUP BY project_name order by id';
+      $result2 = mysqli_query($conn, $sql2);
+      if (isset($_GET['path']) and $_GET['path'] === 'projektai') {
+         print("<table >
                   <tr>
                      <th>ID</th>
-                     <th>Mašinos ID</th>
+                     <th>Projektas</th>
                      <th>Darbuotojai</th>
                      <th>Pasirinktys</th>
                   </tr>");
-      if (mysqli_num_rows($result2) > 0) {
-         while ($row = mysqli_fetch_assoc($result2)) {
-            print('<tr>
+         if (mysqli_num_rows($result2) > 0) {
+            while ($row = mysqli_fetch_assoc($result2)) {
+               print('<tr>
                         <td>' . $row["id"] . '</td> 
-                        <td>' . $row["machine_name"] . '</td> 
+                        <td>' . $row["project_name"] . '</td> 
                         <td>' . $row["fullname"] . '</td>
                         <td>
                            <form method="POST" action="">
-                              <button id= "deleteM" name="deleteM" value="' . $row["id"] . '">Ištrinti</button>
-                              <button id="updateM" name="updateM" value="' . $row["id"] . '">Atnaujinti</button>
+                              <button id= "deleteP" name="deleteP" value="' . $row["id"] . '">Ištrinti</button>
+                              <button id="updateP" name="updateP" value="' . $row["id"] . '">Atnaujinti</button>
                            </form>
                         </td>
                      </tr>');
+            }
+         } else {
+            echo "0 results";
          }
-      } else {
-         echo "0 results";
-      }
-      print("</table>");
-      if (!isset($_POST['updateM'])) {
-         print("<form class='createForm' action='' method='POST'>
-                  <select id='machine' name='machine' onfocus='this.size=11;' onchange='this.size=1; onblur='this.size=0;' >
-                     <option value='H-1'>H-1</option>
-                     <option value='H-2'>H-2</option>
-                     <option value='H-4'>H-4</option>
-                     <option value='H-5'>H-5</option>
-                     <option value='H-6'>H-6</option>
-                     <option value='E-1'>E-1</option>
-                     <option value='H-7'>H-7</option>
-                     <option value='H-8'>H-8</option>
-                     <option value='H-9'>H-9</option>
-                     <option value='H-10'>H-10</option>
-                     <option value='S-1'>S-1</option>
-                  </select>
-                  <button>Pridėti</button>
-               </form>");
-      } else if (isset($_POST['updateM'])) {
-         print("<form class='updateForm' action='' method='POST'>
-                  <p>Pakeisti mašiną, kurios id yra " . $_POST['updateM'] . "</p>
-                     <select id='machineUpdt' name='machineUpdt' onfocus='this.size=11;' onchange='this.size=1; onblur='this.size=0;' >
-                        <option value='H-1'>H-1</option>
-                        <option value='H-2'>H-2</option>
-                        <option value='H-4'>H-4</option>
-                        <option value='H-5'>H-5</option>
-                        <option value='H-6'>H-6</option>
-                        <option value='E-1'>E-1</option>
-                        <option value='H-7'>H-7</option>
-                        <option value='H-8'>H-8</option>
-                        <option value='H-9'>H-9</option>
-                        <option value='H-10'>H-10</option>
-                        <option value='S-1'>S-1</option>
-                     </select>
-                     <button type='submit' name='submit' value='" . $_POST['updateM'] . "'>Pakeisti</button>
+         print("</table>");
+         if (!isset($_POST['updateP'])) {
+            print("<form class='createForm' action='' method='POST'>
+                     <input type='text' name='project' required>
+                     <button>Pridėti</button>
                   </form>");
-      }
-   } else if (!isset($_GET['path'])) {
-      print("<table>
+         } else if (isset($_POST['updateP'])) {
+            print("<form class='updateForm' action='' method='POST'>
+                     <p>Pakeisti projektą, kurio id yra " . $_POST['updateP'] . "</p>
+                     <input type='text' name='projectUpdate' required>
+                     <button type='submit' name='submit' value='" . $_POST['updateP'] . "'>Pakeisti</button>
+                  </form>");
+         }
+      } else if (!isset($_GET['path'])) {
+         print("<table>
                   <tr>
                      <th>ID</th>
                      <th>Vardas</th>
                      <th>Pavardė</th>
-                     <th>Mašinos ID</th>
+                     <th>Projektas</th>
                      <th>Pasirinktys</th>
                   </tr>");
-      if (mysqli_num_rows($result) > 0) {
-         while ($row = mysqli_fetch_assoc($result)) {
-            print('<tr>
+         if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+               print('<tr>
                         <td>' . $row["id"] . '</td>
                         <td>' . $row["fname"] . '</td>
                         <td>' . $row["lname"] . '</td>
-                        <td> ' . $row["machine_name"] . '</td>
+                        <td> ' . $row["project_name"] . '</td>
                         <td>
                            <form method="POST" action="">
                               <button id= "deleteEm" name="deleteEm" value="' . $row["id"] . '">Ištrinti</button>
                               <button id="updateEm" name="updateEm" value="' . $row["id"] . '">Atnaujinti</button>
                            </form>
                         </td>
-                  </tr>');
+                     </tr>');
+            }
+         } else {
+            echo "0 results";
          }
-      } else {
-         echo "0 results";
+         print("</table>");
+         if (!isset($_POST['updateEm'])) {
+            print("<form class='createForm' action='' method='POST'>
+                     <input type='text' name='fname' placeholder='Vardas' required>
+                     <input type='text' name='lname' placeholder='Pavardė' required>
+                     <button id='createEmpl' name='createEmpl'>Pridėti</button>
+                  </form>");
+         } else if (isset($_POST['updateEm'])) {
+            print("<form class='updateForm' action='' method='POST'>
+                     <p class='createId'> Pakeisti darbuotojo, kurio ID yra " . $_POST['updateEm'] . ", duomenis</p>
+                     <input type='text' name='fname' placeholder='Pakeisti darbuotojo vardą' required>
+                     <input type='text' name='lname' placeholder='Pakeisti darbuotojo pavardę' required>
+                     <select id='pName' name='pName' onfocus='this.size=5'>
+                        <option value=''>---Pasirinkti projektą---</option>");
+            $select = "SELECT project_name FROM projects";
+            $result = mysqli_query($conn, $select);
+            if (mysqli_num_rows($result) > 0) {
+               while ($row = mysqli_fetch_assoc($result)) {
+                  print("<option value='" . $row["project_name"] . "'>" . $row["project_name"] . "</option>");
+               }
+               print("</select>
+               <button type='updateSql' name='updateSql' value=" . $_POST['updateEm'] . ">Pakeisti</button>
+                  </form>");
+            }
+         }
       }
-      print("</table>");
-      if (!isset($_POST['updateEm'])) {
-         print("<form class='createForm' action='' method='POST'>
-                  <input type='text' name='fname' placeholder='Vardas' required>
-                  <input type='text' name='lname' placeholder='Pavardė' required>
-                  <button id='createEmpl' name='createEmpl'>Pridėti</button>
-               </form>");
-      } else if (isset($_POST['updateEm'])) {
-         print("<form class='updateForm' action='' method='POST'>
-                  <p class='createId'> Pakeisti darbuotojo, kurio ID yra " . $_POST['updateEm'] . ", duomenis</p>
-                  <input type='text' name='fname' placeholder='Pakeisti darbuotojo vardą' required>
-                  <input type='text' name='lname' placeholder='Pakeisti darbuotojo pavardę' required>
-                  <button id='updateSql' name='updateSql' value=" . $_POST['updateEm'] . ">Pakeisti</button>
-               </form>");
-      }
-   }
-   print("<footer>
-            <p>Copyright</p>
-         </footer>");
-   mysqli_close($conn);
+      print("<footer>
+               <p id='footerText'> Copyright ©    <script>document.write(new Date().getFullYear())</script></p>
+            </footer>");
+      mysqli_close($conn);
    ?>
 </body>
 
