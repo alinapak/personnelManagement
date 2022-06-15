@@ -44,13 +44,16 @@ declare(strict_types=1); ?>
          die;
       }
       if (isset($_POST['project'])) {
-         $check = "SELECT * from projects WHERE project_name = '" . $_POST['project'] . "'";
+         $projectName = htmlspecialchars($_POST['project']);
+         $check = "SELECT * from projects WHERE project_name = '" . $projectName. "'";
          $alreadyExists = mysqli_query($conn, $check);
          if (mysqli_num_rows($alreadyExists) < 1) {
-            $sqlCreate = "INSERT INTO projects (project_name)
-                                 VALUES ('" . $_POST['project'] . "')";
-            if (mysqli_query($conn, $sqlCreate))
-               header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
+            $stmt = $conn -> prepare("INSERT INTO projects (project_name)
+            VALUES (?)");
+            $stmt->bind_param("s",$projectName);
+            $stmt->execute();
+            $stmt->close();
+            header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
             die;
          }
          header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
@@ -70,12 +73,13 @@ declare(strict_types=1); ?>
          die;
       }
       if (isset($_POST['submit'])) {
-         $check = "SELECT * from projects WHERE project_name = '" . $_POST['projectUpdate'] . "'";
+         $projectUpdateName = htmlspecialchars($_POST['projectUpdate']);
+         $check = "SELECT * from projects WHERE project_name = '" . $projectUpdateName . "'";
          $alreadyExists = mysqli_query($conn, $check);
          if (mysqli_num_rows($alreadyExists) < 1) {
             $sqlUpdate = "UPDATE projects
                               SET
-                              project_name = '" . $_POST['projectUpdate'] . "'
+                              project_name = '" . $projectUpdateName . "'
                               WHERE id = " . $_POST['submit'] . "";
             if (mysqli_query($conn, $sqlUpdate))
                header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
