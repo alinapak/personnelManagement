@@ -2,7 +2,7 @@
 
 ## Description
 
-  This is my second PHP project created for study purposes. It was used raw CSS and PHP in this project and displayed data was created using `MySQL workbench`.Assigned and completed tasks:
+  This is my second PHP project created for study purposes. It was used raw CSS and PHP in this project and displayed data was created using `MySQL workbench`. Assigned and completed tasks:
   * Create DB schema with tables and data in it with relations (in this case: 1:M relation);
   * Display DB schema tables data with their relations into browser using PHP;
   * Create Delete and Update functionality: Delete and Update in browser should work in DB tables too;
@@ -17,7 +17,7 @@
   * Open `MySQL workbench` and connect at any your connection (connection should support creating database and reading, creating, updating and deleting tables);
   * In your chosen connection Create DATABASE named **personnel_projects** or copy this command: `CREATE DATABASE personnel_projects;`
   * Click on **Server** and choose **Data Import**, as you can see in the image:
-  * 
+  
 ![image](https://user-images.githubusercontent.com/99712422/173834342-d86bafc0-7fe5-4682-87ce-6f32e16c5620.png)
 
   * Click **Import from Self-Contained File** and find **dump.sql** file, which should be in **htdocs** folder, where you cloned this project:
