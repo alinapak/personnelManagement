@@ -15,7 +15,7 @@ declare(strict_types=1); ?>
       $servername = "localhost";
       $username = "root";
       $password = "";
-      $dbname = "personel_projects";
+      $dbname = "personnel_projects";
       $conn = mysqli_connect($servername, $username, $password, $dbname);
       if (!$conn) {
          die("Connection failed: " . mysqli_connect_error());
