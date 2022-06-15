@@ -31,10 +31,6 @@
   * Leave default settings (**Dump Structure and Data**) and select **Start Import**:
   
 ![image](https://user-images.githubusercontent.com/99712422/173834997-02751993-96cc-4381-930d-e83b0b0f4065.png)
-  
-  * If you choosed `root` user, then only click ok on jumped table, if other user, enter that user password:
-
-![image](https://user-images.githubusercontent.com/99712422/173835427-93cf9060-08fc-48e7-ab53-3ed873950a7d.png)
 
   * Refresh your DataBase:
   
