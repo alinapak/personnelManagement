@@ -17,17 +17,33 @@
   * Open `MySQL workbench` and connect at any your connection (connection should support creating database and reading, creating, updating and deleting tables);
   * In your chosen connection Create DATABASE named **personnel_projects** or copy this command: `CREATE DATABASE personnel_projects;`
   * Click on **Server** and choose **Data Import**, as you can see in the image:
-  image.png
+  * 
+![image](https://user-images.githubusercontent.com/99712422/173834342-d86bafc0-7fe5-4682-87ce-6f32e16c5620.png)
+
   * Click **Import from Self-Contained File** and find **dump.sql** file, which should be in **htdocs** folder, where you cloned this project:
-  image.png
+  
+![image](https://user-images.githubusercontent.com/99712422/173834673-6f852e03-91d6-4d0d-9820-565d6826e8ab.png)
+  
   * Select **Default Target Schema** and choose your created schema named **personnel_projects**:
-  image.png
-  * Leave defaulted settings (**Dump Structure and Data**) and select **Start Import**:
-  image.png
+  
+![image](https://user-images.githubusercontent.com/99712422/173834852-8b9800e2-85ee-40fc-9d21-d8f495eed30c.png)
+  
+  * Leave default settings (**Dump Structure and Data**) and select **Start Import**:
+  
+![image](https://user-images.githubusercontent.com/99712422/173834997-02751993-96cc-4381-930d-e83b0b0f4065.png)
+  
+  * If you choosed `root` user, then only click ok on jumped table, if other user, enter that user password:
+
+![image](https://user-images.githubusercontent.com/99712422/173835427-93cf9060-08fc-48e7-ab53-3ed873950a7d.png)
+
   * Refresh your DataBase:
-  image.png
+  
+![image](https://user-images.githubusercontent.com/99712422/173835531-4594c2e1-24ed-488e-a476-7d947cc6e40d.png)
+  
   * Now you should see all created tables and their data:
-  image.png
+
+![image](https://user-images.githubusercontent.com/99712422/173836091-2e7c7d62-99a1-45d5-a00a-1dd54e8929de.png)
+  
   * After all these steps, open your browser and in searcbar type `localhost/personnelManagement`.
 
 ## Usage
