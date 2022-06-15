@@ -2,7 +2,7 @@
 
 ## Description
 
-    This is my second PHP project created for study purposes. It was used raw CSS and PHP in this project and displayed data was created using `MySQL workbench`.Assigned and completed tasks:
+  This is my second PHP project created for study purposes. It was used raw CSS and PHP in this project and displayed data was created using `MySQL workbench`.Assigned and completed tasks:
   * Create DB schema with tables and data in it with relations (in this case: 1:M relation);
   * Display DB schema tables data with their relations into browser using PHP;
   * Create Delete and Update functionality: Delete and Update in browser should work in DB tables too;
@@ -11,7 +11,7 @@
   * Use 'prepared statements' into code;
 
 ## Instalation
-    To launch this project you will need `Git Bash` or `VSCode`, `MySQL Workbench` and `Xampp` apps.
+  To launch this project you will need `Git Bash` or `VSCode`, `MySQL Workbench` and `Xampp` apps.
   * To clone this project: Navigate to **htdocs** folder and with your `Git Bash` or via `VSCode` terminal type `git clone https://github.com/alinapak/personnelManagement.git` ;
   * Open `Xampp` and make sure that **Apache** and **MySQL** servers are on;
   * Open `MySQL workbench` and connect at any your connection (connection should support creating database and reading, creating, updating and deleting tables);
@@ -31,7 +31,7 @@
   * After all these steps, open your browser and in searcbar type `localhost/personnelManagement`.
 
 ## Usage
-    After typing in your browser search bar `localhost/personnelManagement`, you will see `personnel` table, and you also be able to navigate between `personnel` and `projects` tables via navbar. While navigating, you can:
+  After typing in your browser search bar `localhost/personnelManagement`, you will see `personnel` table, and you also be able to navigate between `personnel` and `projects` tables via navbar. While navigating, you can:
   * Delete employees;
   * Create new employees;
   * Delete projects;
@@ -40,4 +40,4 @@
   * Update employees and by updating them assign an existing project to them.
 
 ## Author
-    This project was created by me [Alina Pakamorytė](https://www.linkedin.com/in/alina-pakamoryt%C4%97-73a66377/)
+  This project was created by me [Alina Pakamorytė](https://www.linkedin.com/in/alina-pakamoryt%C4%97-73a66377/)
