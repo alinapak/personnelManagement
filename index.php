@@ -21,15 +21,19 @@ declare(strict_types=1); ?>
          die("Connection failed: " . mysqli_connect_error());
       }
       if (isset($_POST['deleteEm'])) {
-         $sqlDelete = "DELETE FROM personnel WHERE id = " . $_POST['deleteEm'] . "";
-         if (mysqli_query($conn, $sqlDelete))
-            header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
+         $stmt = $conn->prepare("DELETE FROM personnel WHERE id = ?");
+         $stmt->bind_param("i", $_POST['deleteEm']);
+         $stmt->execute();
+         $stmt->close();
+         header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
          die;
       }
       if (isset($_POST['deleteP'])) {
-         $sqlDelete = "DELETE FROM projects WHERE id = " . $_POST['deleteP'] . "";
-         if (mysqli_query($conn, $sqlDelete))
-            header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
+         $stmt=$conn->prepare("DELETE FROM projects WHERE id = ?");
+         $stmt->bind_param("i", $_POST['deleteP']);
+         $stmt->execute();
+         $stmt->close();
+         header('Location: ' . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']);
          die;
       }
       if (isset($_POST['createEmpl'])) {
